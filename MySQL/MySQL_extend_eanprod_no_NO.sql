@@ -1,5 +1,5 @@
 ########################################################
-## MySQL_extend_eanprod_no_NO.sql                v2.7 ##
+## MySQL_extend_eanprod_no_no.sql                v2.7 ##
 ## (International) Japanese data tables               ##
 ## This is a suplemental script that you can use to   ##
 ## extend the database eanprod and add languages.     ##
@@ -14,16 +14,16 @@ USE eanprod;
 ##                                                    ##
 ## TABLES CREATED FROM THE EAN RELATIONAL DOWNLOADED  ##
 ## FILES, but with the language code as:              ##
-## ar_SA,no_NO,fr_FR,it_IT,no_NO,tr_TR,cs_CZ,es_MX,   ##
-## hr_HR,ko_KR,no_NO,ru_RU,uk_UA,da_DK,et_EE,hu_HU,   ##
+## ar_SA,no_no,fr_FR,it_IT,no_no,tr_TR,cs_CZ,es_MX,   ##
+## hr_HR,ko_KR,no_no,ru_RU,uk_UA,da_DK,et_EE,hu_HU,   ##
 ## lt_LT,nl_NL,sk_SK,vi_VN,de_DE,fi_FI,in_ID,lv_LV,   ##
 ## pl_PL,sv_SE,zh_CN,el_GR,fr_CA,is_IS,ms_MY,pt_BR,   ##
 ## th_TH,zh_TW                                        ##
 ########################################################
 
 ## ActivePropertyList - structure is different for en_US version
-DROP TABLE IF EXISTS activepropertylist_no_NO;
-CREATE TABLE activepropertylist_no_NO
+DROP TABLE IF EXISTS activepropertylist_no_no;
+CREATE TABLE activepropertylist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -39,8 +39,8 @@ CREATE TABLE activepropertylist_no_NO
 ## table to correct search term for a region
 ## notice there are NO spaces between words
 ## AliasRegionList - structure is the same as US version
-DROP TABLE IF EXISTS aliasregionlist_no_NO;
-CREATE TABLE aliasregionlist_no_NO
+DROP TABLE IF EXISTS aliasregionlist_no_no;
+CREATE TABLE aliasregionlist_no_no
 (
 	RegionID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -48,12 +48,12 @@ CREATE TABLE aliasregionlist_no_NO
     TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ##	PRIMARY KEY (RegionID, AliasString)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-CREATE INDEX idx_aliasregionlist_no_NO_regionid ON aliasregionlist_no_NO(RegionID);
+CREATE INDEX idx_aliasregionlist_no_no_regionid ON aliasregionlist_no_no(RegionID);
 
 
 ## AreaAttractionsList - structure is the same as US version
-DROP TABLE IF EXISTS areaattractionslist_no_NO;
-CREATE TABLE areaattractionslist_no_NO
+DROP TABLE IF EXISTS areaattractionslist_no_no;
+CREATE TABLE areaattractionslist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -64,8 +64,8 @@ CREATE TABLE areaattractionslist_no_NO
 
 
 ## ActivePropertyList - structure is different for US version
-DROP TABLE IF EXISTS attributelist_no_NO;
-CREATE TABLE attributelist_no_NO
+DROP TABLE IF EXISTS attributelist_no_no;
+CREATE TABLE attributelist_no_no
 (
 	AttributeID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -76,8 +76,8 @@ CREATE TABLE attributelist_no_NO
 
 
 ## CountryList - structure is different for US version
-DROP TABLE IF EXISTS countrylist_no_NO;
-CREATE TABLE countrylist_no_NO
+DROP TABLE IF EXISTS countrylist_no_no;
+CREATE TABLE countrylist_no_no
 (
 	CountryID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -88,13 +88,13 @@ CREATE TABLE countrylist_no_NO
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## add indexes by country code & country name
-CREATE INDEX idx_countrylist_no_NO_countryname ON countrylist_no_NO(CountryName);
+CREATE INDEX idx_countrylist_no_no_countryname ON countrylist_no_no(CountryName);
 ## as the field ContryCode is not present, no index exist like the US version
 
 
 ## DinningDescriptionList - structure is the same as US version
-DROP TABLE IF EXISTS diningdescriptionlist_no_NO;
-CREATE TABLE diningdescriptionlist_no_NO
+DROP TABLE IF EXISTS diningdescriptionlist_no_no;
+CREATE TABLE diningdescriptionlist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -104,8 +104,8 @@ CREATE TABLE diningdescriptionlist_no_NO
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## PolicyDescriptionList - structure is the same for US version
-DROP TABLE IF EXISTS policydescriptionlist_no_NO;
-CREATE TABLE policydescriptionlist_no_NO
+DROP TABLE IF EXISTS policydescriptionlist_no_no;
+CREATE TABLE policydescriptionlist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -117,8 +117,8 @@ CREATE TABLE policydescriptionlist_no_NO
 
 
 ## PropertyAttributeLink - structure is the same as US version
-DROP TABLE IF EXISTS propertyattributelink_no_NO;
-CREATE TABLE propertyattributelink_no_NO
+DROP TABLE IF EXISTS propertyattributelink_no_no;
+CREATE TABLE propertyattributelink_no_no
 (
 	EANHotelID INT NOT NULL,
 	AttributeID INT NOT NULL,
@@ -131,8 +131,8 @@ CREATE TABLE propertyattributelink_no_NO
 
 
 ## PropertyDescriptionList - structure is the same as US version
-DROP TABLE IF EXISTS propertydescriptionlist_no_NO;
-CREATE TABLE propertydescriptionlist_no_NO
+DROP TABLE IF EXISTS propertydescriptionlist_no_no;
+CREATE TABLE propertydescriptionlist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -143,8 +143,8 @@ CREATE TABLE propertydescriptionlist_no_NO
 
 
 ## PropertyTypeList - structure is the same as US version
-DROP TABLE IF EXISTS propertytypelist_no_NO;
-CREATE TABLE propertytypelist_no_NO
+DROP TABLE IF EXISTS propertytypelist_no_no;
+CREATE TABLE propertytypelist_no_no
 (
 	PropertyCategory INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -155,8 +155,8 @@ CREATE TABLE propertytypelist_no_NO
 
 
 ## RecreationDescriptionList - structure is the same as US version
-DROP TABLE IF EXISTS recreationdescriptionlist_no_NO;
-CREATE TABLE recreationdescriptionlist_no_NO
+DROP TABLE IF EXISTS recreationdescriptionlist_no_no;
+CREATE TABLE recreationdescriptionlist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -168,8 +168,8 @@ CREATE TABLE recreationdescriptionlist_no_NO
 
 ## RegionList - structure is different for US version
 ## table is RegionList, while US is ParentRegionList
-DROP TABLE IF EXISTS regionlist_no_NO;
-CREATE TABLE regionlist_no_NO
+DROP TABLE IF EXISTS regionlist_no_no;
+CREATE TABLE regionlist_no_no
 (
   RegionID INT NOT NULL,
   LanguageCode VARCHAR(5),
@@ -181,8 +181,8 @@ CREATE TABLE regionlist_no_NO
 
 
 ## SpaDescriptionList - structure is the same as US version
-DROP TABLE IF EXISTS spadescriptionlist_no_NO;
-CREATE TABLE spadescriptionlist_no_NO
+DROP TABLE IF EXISTS spadescriptionlist_no_no;
+CREATE TABLE spadescriptionlist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -194,8 +194,8 @@ CREATE TABLE spadescriptionlist_no_NO
 
 ## Multiple rooms per each hotel - so a compound primary key
 ## RoomTypeList - structure is different for US version
-DROP TABLE IF EXISTS roomtypelist_no_NO;
-CREATE TABLE roomtypelist_no_NO
+DROP TABLE IF EXISTS roomtypelist_no_no;
+CREATE TABLE roomtypelist_no_no
 (
 	EANHotelID INT NOT NULL,
 	RoomTypeID INT NOT NULL,
@@ -208,8 +208,8 @@ CREATE TABLE roomtypelist_no_NO
 
 
 ## WhatToExpectList - structure is the same as US version
-DROP TABLE IF EXISTS whattoexpectlist_no_NO;
-CREATE TABLE whattoexpectlist_no_NO
+DROP TABLE IF EXISTS whattoexpectlist_no_no;
+CREATE TABLE whattoexpectlist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -220,8 +220,8 @@ CREATE TABLE whattoexpectlist_no_NO
 
 ## new files from minorrev=24 
 ## PropertyLocationList (new)
-DROP TABLE IF EXISTS propertylocationlist_no_NO;
-CREATE TABLE propertylocationlist_no_NO
+DROP TABLE IF EXISTS propertylocationlist_no_no;
+CREATE TABLE propertylocationlist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -231,8 +231,8 @@ CREATE TABLE propertylocationlist_no_NO
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## PropertyAmenitiesList (new)
-DROP TABLE IF EXISTS propertyamenitieslist_no_NO;
-CREATE TABLE propertyamenitieslist_no_NO
+DROP TABLE IF EXISTS propertyamenitieslist_no_no;
+CREATE TABLE propertyamenitieslist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -242,8 +242,8 @@ CREATE TABLE propertyamenitieslist_no_NO
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## PropertyRoomsList (new)
-DROP TABLE IF EXISTS propertyroomslist_no_NO;
-CREATE TABLE propertyroomslist_no_NO
+DROP TABLE IF EXISTS propertyroomslist_no_no;
+CREATE TABLE propertyroomslist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -253,8 +253,8 @@ CREATE TABLE propertyroomslist_no_NO
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## PropertyBusinessAmenitiesList (new)
-DROP TABLE IF EXISTS propertybusinessamenitieslist_no_NO;
-CREATE TABLE propertybusinessamenitieslist_no_NO
+DROP TABLE IF EXISTS propertybusinessamenitieslist_no_no;
+CREATE TABLE propertybusinessamenitieslist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -264,8 +264,8 @@ CREATE TABLE propertybusinessamenitieslist_no_NO
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## PropertyNationalRatingList (new)
-DROP TABLE IF EXISTS propertynationalratingslist_no_NO;
-CREATE TABLE propertynationalratingslist_no_NO
+DROP TABLE IF EXISTS propertynationalratingslist_no_no;
+CREATE TABLE propertynationalratingslist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -275,8 +275,8 @@ CREATE TABLE propertynationalratingslist_no_NO
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## PropertyFeesList (new)
-DROP TABLE IF EXISTS propertyfeeslist_no_NO;
-CREATE TABLE propertyfeeslist_no_NO
+DROP TABLE IF EXISTS propertyfeeslist_no_no;
+CREATE TABLE propertyfeeslist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -286,8 +286,8 @@ CREATE TABLE propertyfeeslist_no_NO
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## PropertyMandatoryFeesList (new)
-DROP TABLE IF EXISTS propertymandatoryfeeslist_no_NO;
-CREATE TABLE propertymandatoryfeeslist_no_NO
+DROP TABLE IF EXISTS propertymandatoryfeeslist_no_no;
+CREATE TABLE propertymandatoryfeeslist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -297,8 +297,8 @@ CREATE TABLE propertymandatoryfeeslist_no_NO
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## PropertyRenovationList (new)
-DROP TABLE IF EXISTS propertyrenovationslist_no_NO;
-CREATE TABLE propertyrenovationslist_no_NO
+DROP TABLE IF EXISTS propertyrenovationslist_no_no;
+CREATE TABLE propertyrenovationslist_no_no
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode VARCHAR(5),
@@ -309,8 +309,8 @@ CREATE TABLE propertyrenovationslist_no_NO
 
 ## Business Models for pre-pay & post-pay properties
 ### Business Model Flag - Expedia Collect (1), Hotel Collect (2) and ETP (3) inventory.
-DROP TABLE IF EXISTS activepropertybusinessmodel_no_NO;
-CREATE TABLE activepropertybusinessmodel_no_NO 
+DROP TABLE IF EXISTS activepropertybusinessmodel_no_no;
+CREATE TABLE activepropertybusinessmodel_no_no 
 (
   EANHotelID INT NOT NULL,
   LanguageCode VARCHAR(5),
