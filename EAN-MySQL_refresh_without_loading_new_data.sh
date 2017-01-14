@@ -33,7 +33,7 @@ MYSQL_DB=eanprod
 # home directory of the user (in our case "eanuser")
 HOME_DIR=/home/eanuser
 # protocol TCP All, SOCKET Unix only, PIPE Windows only, MEMORY Windows only
-MYSQL_PROTOCOL=SOCKET
+MYSQL_PROTOCOL=TCP
 # 3336 as default,MAC using MAMP is 8889
 MYSQL_PORT=3306
 ## directory under HOME_DIR
@@ -471,7 +471,6 @@ do
     ## check if we need to update or not based on file changed, file contains at least 1x record
     ## file is readeable, file NOT empty, file unzipped w/o errors
     if [ "$records" -gt 0 ] && [ -s ${FILE}.txt ] && [ -r ${FILE}.txt ]; then
-    	echo "Updating as integrity is ok & checksum change ($CHKSUM_PREV) to ($CHKSUM_NOW) on file ($FILE.txt)..."
 		## table name are lowercase
    		tablename=`echo $FILE | tr "[[:upper:]]" "[[:lower:]]"`
         ## checking if working with activepropertybusinessmodel to make a backup of it before changes

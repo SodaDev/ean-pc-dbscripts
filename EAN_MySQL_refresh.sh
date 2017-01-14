@@ -33,7 +33,7 @@ MYSQL_DB=eanprod
 # home directory of the user (in our case "eanuser")
 HOME_DIR=/home/eanuser
 # protocol TCP All, SOCKET Unix only, PIPE Windows only, MEMORY Windows only
-MYSQL_PROTOCOL=SOCKET
+MYSQL_PROTOCOL=TCP
 # 3336 as default,MAC using MAMP is 8889
 MYSQL_PORT=3306
 ## directory under HOME_DIR
