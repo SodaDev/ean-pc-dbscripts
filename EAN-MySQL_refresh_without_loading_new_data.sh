@@ -464,6 +464,56 @@ CMD_MYSQL="${MYSQL_DIR}mysql  --local-infile=1 --default-character-set=utf8 --pr
 # for version 5.6.6+ you will need this line instead to use stored credentials
 #CMD_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --local-infile=1 --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=${MYSQL_DB}"
 #
+for FILE in ${FILES[@]}
+do
+    records=`wc -l < $FILE.txt | tr -d ' '`
+    (( records-- ))
+    ## check if we need to update or not based on file changed, file contains at least 1x record
+    ## file is readeable, file NOT empty, file unzipped w/o errors
+    if [ "$records" -gt 0 ] && [ -s ${FILE}.txt ] && [ -r ${FILE}.txt ]; then
+    	echo "Updating as integrity is ok & checksum change ($CHKSUM_PREV) to ($CHKSUM_NOW) on file ($FILE.txt)..."
+		## table name are lowercase
+   		tablename=`echo $FILE | tr "[[:upper:]]" "[[:lower:]]"`
+        ## checking if working with activepropertybusinessmodel to make a backup of it before changes
+        if [ $tablename = "activepropertybusinessmodel" ]; then
+			echo "Running a backup of ActivePropertyBusinessModel..."
+			### Run stored procedures as required for extra functionality       ###
+			### you can use this section for your own stuff                     ###
+			CMDSP_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanprod"
+			# for version 5.6.6+ you will need this line instead to use stored credentials
+			#CMDSP_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=eanprod"
+			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_createcopy();"
+			echo "ActivePropertyBusinessModel backup done."
+        fi
+		### Update MySQL Data ###
+   		echo "Uploading ($FILE.txt) to ($MYSQL_DB.$tablename) with REPLACE option..."
+		## if you have limited resources use this line instead to avoid creating the transaction log
+		## you will need to give grant SUPER to the user, for it to work
+   		## $CMD_MYSQL --execute="set foreign_key_checks=0; set sql_log_bin=0; set unique_checks=0; LOAD DATA LOCAL INFILE '$FILE.txt' REPLACE INTO TABLE $tablename CHARACTER SET utf8 FIELDS TERMINATED BY '|' IGNORE 1 LINES;"
+   		$CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$FILE.txt' REPLACE INTO TABLE $tablename CHARACTER SET utf8 FIELDS TERMINATED BY '|' IGNORE 1 LINES;"
+   		## we need to erase the records, NOT updated today
+   		echo "erasing old records from ($tablename)..."
+   		$CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
+        ## checking if working with activepropertybusinessmodel to fill the changed log table
+        if [ $tablename = "activepropertybusinessmodel" ]; then
+			echo "Creating log of changes for ActivePropertyBusinessModel..."
+			### Run stored procedures as required for extra functionality       ###
+			### you can use this section for your own stuff                     ###
+			CMDSP_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanprod"
+			# for version 5.6.6+ you will need this line instead to use stored credentials
+			#CMDSP_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=eanprod"
+			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_addedrecords();"
+			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_erasedrecords();"
+			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_erase_common();"
+			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_erase_deleted();"
+			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_changedrecords();"
+			### erase records before retention period
+			$CMDSP_MYSQL --execute="DELETE FROM log_activeproperty_changes WHERE TimeStamp < DATE_SUB(NOW(), INTERVAL $LOG_DAYS DAY);"
+			echo "Log for ActivePropertyBusinessModel done."
+        fi
+    fi
+done
+echo "Updates done."
 
 echo "Running Extras ... Stored Procedures..."
 ### Run stored procedures as required for extra functionality       ###
