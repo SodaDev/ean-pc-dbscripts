@@ -30,7 +30,7 @@ MYSQL_LOGINPATH=local
 test -n "${MYSQL_HOST}" || { echo 'Environment variable MYSQL_HOST must be set'; exit 1; }
 test -n "${MYSQL_USER}" || { echo 'Environment variable MYSQL_USER must be set'; exit 1 ; }
 test -n "${MYSQL_DB}" || { echo 'Environment variable MYSQL_USER must be set'; exit 1 ; }
-test -n "${MYSQL_PASSWORD}" || { echo 'Environment variable MYSQL_PASSWORD must be set'; exit 1; }
+test -n "${MYSQL_PASS}" || { echo 'Environment variable MYSQL_PASS must be set'; exit 1; }
 
 # home directory of the user (in our case "eanuser")
 HOME_DIR=/opt/data/eanprod
