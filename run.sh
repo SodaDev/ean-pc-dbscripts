@@ -17,37 +17,45 @@ sql_files=${workspace}/MySQL
 mkdir -p ${workspace}
 
 function checkout {
+  echo 'Repository checkout'
   test -e ${workspace}/.git ||
   git clone ${git_url} ${workspace}
 }
 
 function run_query {
+    echo 'Running query'
     mysql -sqN -u "${MYSQL_USER}" -p"${MYSQL_PASS}" -h "$MYSQL_HOST"  -D $DB_NAME -e "$@"
 }
 
 function run_query_from_pipe {
-    mysql -sqN -u "${MYSQL_USER}" -p"${MYSQL_PASS}" -h "$MYSQL_HOST" 
+    echo 'Running piped query'
+    mysql -sqN -u "${MYSQL_USER}" -p"${MYSQL_PASS}" -h "$MYSQL_HOST"
 }
 
 function run_query_global {
+    echo 'Running global query'
     mysql -sqN -u "${MYSQL_USER}" -p"${MYSQL_PASS}" -h "$MYSQL_HOST" -e "$@"
 }
 
 function should_create_table {
-  run_query 'show tables' | grep -q 'activepropertybusinessmodel' && return 1
-  return 0  
+  echo 'Checking tables existence'
+  run_query 'show tables' | grep -q 'activepropertylist' && return 1
+  return 0
 }
 
 function should_create_database {
+  echo 'Checking DB existence'
   run_query_global 'show databases' | grep -q "${DB_NAME}" && return 1
   return 0
 }
 
 function create_database {
+  echo 'Creating DB'
   run_query_global "create database ${DB_NAME} "
 }
 
 function create_tables {
+  echo 'Creating tables'
   run_query_from_pipe < "${sql_files}/MySQL_create_eanprod.sql"
   
   langs=$(find $sql_files -type f | grep extend)

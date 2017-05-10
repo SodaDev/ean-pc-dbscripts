@@ -30,33 +30,14 @@ FLUSH PRIVILEGES;
 
 USE eanprod;
 
+SET group_concat_max_len = 1000000;
+
 ########################################################
 ##                                                    ##
 ## TABLES CREATED FROM THE EAN RELATIONAL DOWNLOADED  ##
 ## FILES.                                             ##
 ##                                                    ##
 ########################################################
-
-DROP TABLE IF EXISTS airportcoordinateslist;
-CREATE TABLE airportcoordinateslist
-(
-	AirportID INT NOT NULL,
-	AirportCode VARCHAR(3) NOT NULL,
-	AirportName VARCHAR(70),
-	Latitude numeric(9,6),
-	Longitude numeric(9,6),
-	MainCityID INT,
-	CountryCode VARCHAR(2),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (AirportCode)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## index by Airport Name to use for text searches
-CREATE INDEX idx_airportcoordinatelist_airportname ON airportcoordinateslist(AirportName);
-## index by MainCityID to use as relational key
-CREATE INDEX idx_airportcoordinatelist_maincityid ON airportcoordinateslist(MainCityID);
-## index by Latitude, Longitude to use for geosearches
-CREATE INDEX airportcoordinate_geoloc ON airportcoordinateslist(Latitude, Longitude);
 
 DROP TABLE IF EXISTS activepropertylist;
 CREATE TABLE activepropertylist
@@ -94,47 +75,6 @@ CREATE INDEX activeproperties_geoloc ON activepropertylist(Latitude, Longitude);
 ## index by RegionID to use for Regions searches
 CREATE INDEX activeproperties_regionid ON activepropertylist(RegionID);
 
-DROP TABLE IF EXISTS pointsofinterestcoordinateslist;
-CREATE TABLE pointsofinterestcoordinateslist
-(
-	RegionID INT NOT NULL,
-	RegionName VARCHAR(255),
-## as it will be the key need to be less than 767 bytes (767 / 4 = 191.75)  
-	RegionNameLong VARCHAR(191),
-	Latitude numeric(9,6),
-	Longitude numeric(9,6),
-	SubClassification VARCHAR(20),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (RegionNameLong)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
--- ENGINE=MyISAM;
--- http://dev.mysql.com/doc/refman/5.5/en/creating-spatial-indexes.html
-
-
-## index by RegionID to use as relational key
-CREATE INDEX idx_pointsofinterestcoordinateslist_regionid ON pointsofinterestcoordinateslist(RegionID);
-## index by Latitude, Longitude to use for geosearches
-CREATE INDEX idx_poi__geoloc ON pointsofinterestcoordinateslist(Latitude, Longitude);
-
-
-DROP TABLE IF EXISTS countrylist;
-CREATE TABLE countrylist
-(
-	CountryID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	CountryName VARCHAR(250),
-	CountryCode VARCHAR(2) NOT NULL,
-	Transliteration VARCHAR(256),
-	ContinentID INT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (CountryID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## add indexes by country code & country name
-CREATE UNIQUE INDEX idx_countrylist_countrycode ON countrylist(CountryCode);
-CREATE UNIQUE INDEX idx_countrylist_countryname ON countrylist(CountryName);
-
-
 DROP TABLE IF EXISTS propertytypelist;
 CREATE TABLE propertytypelist
 (
@@ -145,17 +85,6 @@ CREATE TABLE propertytypelist
 	PRIMARY KEY (PropertyCategory)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-
-DROP TABLE IF EXISTS chainlist;
-CREATE TABLE chainlist
-(
-	ChainCodeID INT NOT NULL,
-	ChainName VARCHAR(30),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (ChainCodeID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
 DROP TABLE IF EXISTS propertydescriptionlist;
 CREATE TABLE propertydescriptionlist
 (
@@ -165,87 +94,6 @@ CREATE TABLE propertydescriptionlist
   TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (EANHotelID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS policydescriptionlist;
-CREATE TABLE policydescriptionlist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PolicyDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS recreationdescriptionlist;
-CREATE TABLE recreationdescriptionlist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	RecreationDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS areaattractionslist;
-CREATE TABLE areaattractionslist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	AreaAttractions TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS diningdescriptionlist;
-CREATE TABLE diningdescriptionlist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	DiningDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS spadescriptionlist;
-CREATE TABLE spadescriptionlist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	SpaDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS whattoexpectlist;
-CREATE TABLE whattoexpectlist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	WhatToExpect TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-## Multiple rooms per each hotel - so a compound primary key
-DROP TABLE IF EXISTS roomtypelist;
-CREATE TABLE roomtypelist
-(
-	EANHotelID INT NOT NULL,
-	RoomTypeID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	RoomTypeImage VARCHAR(256),
-	RoomTypeName VARCHAR(200),
-	RoomTypeDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID, RoomTypeID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
 
 DROP TABLE IF EXISTS attributelist;
 CREATE TABLE attributelist
@@ -259,7 +107,6 @@ CREATE TABLE attributelist
 	PRIMARY KEY (AttributeID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-
 DROP TABLE IF EXISTS propertyattributelink;
 CREATE TABLE propertyattributelink
 (
@@ -272,7 +119,6 @@ CREATE TABLE propertyattributelink
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 ## add reverse index to speed up reversed join queries
 CREATE INDEX idx_propertyattributelink_reverse ON propertyattributelink(AttributeID,EANHotelID);
-
 
 
 ########### Image Data ####################
@@ -297,206 +143,6 @@ CREATE TABLE hotelimagelist
 	PRIMARY KEY (URL)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 CREATE INDEX idx_hotelimagelist_eanhotelid ON hotelimagelist(EANHotelID);
-
-########## Geography Data ###################
-
-DROP TABLE IF EXISTS citycoordinateslist;
-CREATE TABLE citycoordinateslist
-(
-	RegionID INT NOT NULL,
-	RegionName VARCHAR(255),
-	Coordinates TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (RegionID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-## table to correct search term for a region
-## notice there are NO spaces between words
-DROP TABLE IF EXISTS aliasregionlist;
-CREATE TABLE aliasregionlist
-(
-	RegionID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	AliasString VARCHAR(255),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-##	PRIMARY KEY (RegionID, AliasString)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-CREATE INDEX idx_aliasregionid_regionid ON aliasregionlist(RegionID);
-
-
-DROP TABLE IF EXISTS parentregionlist;
-CREATE TABLE parentregionlist
-(
-	RegionID INT NOT NULL,
-	RegionType VARCHAR(50),
-	RelativeSignificance VARCHAR(3),
-	SubClass VARCHAR(50),
-	RegionName VARCHAR(255),
-	RegionNameLong VARCHAR(510),
-	ParentRegionID INT,
-	ParentRegionType VARCHAR(50),
-	ParentRegionName VARCHAR(255),
-	ParentRegionNameLong VARCHAR(510),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (RegionID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-CREATE INDEX idx_parentregionlist_parentid ON parentregionlist(ParentRegionID);
-
-DROP TABLE IF EXISTS neighborhoodcoordinateslist;
-CREATE TABLE neighborhoodcoordinateslist
-(
-	RegionID INT NOT NULL,
-	RegionName VARCHAR(255),
-	Coordinates TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (RegionID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS regioncentercoordinateslist;
-CREATE TABLE regioncentercoordinateslist
-(
-	RegionID INT NOT NULL,
-	RegionName VARCHAR(255),
-	CenterLatitude numeric(9,6),
-	CenterLongitude numeric(9,6),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (RegionID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS regioneanhotelidmapping;
-CREATE TABLE regioneanhotelidmapping
-(
-	RegionID INT NOT NULL,
-	EANHotelID INT NOT NULL,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (RegionID, EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-CREATE INDEX idx_hotelidmapping_reverse ON regioneanhotelidmapping(EANHotelID,RegionID);
-
-##
-## added tables for minorRev=24+
-##
-DROP TABLE IF EXISTS propertylocationlist;
-CREATE TABLE propertylocationlist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyLocationDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS propertyamenitieslist;
-CREATE TABLE propertyamenitieslist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyAmenitiesDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS propertyroomslist;
-CREATE TABLE propertyroomslist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyRoomsDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS propertybusinessamenitieslist;
-CREATE TABLE propertybusinessamenitieslist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyBusinessAmenitiesDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS propertynationalratingslist;
-CREATE TABLE propertynationalratingslist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyNationalRatingsDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS propertyfeeslist;
-CREATE TABLE propertyfeeslist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyFeesDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS propertymandatoryfeeslist;
-CREATE TABLE propertymandatoryfeeslist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyMandatoryFeesDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS propertyrenovationslist;
-CREATE TABLE propertyrenovationslist
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyRenovationsDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-### table to identify pre/post pay (ONLY for authorized partners)
-### Business Model Flag - Expedia Collect (1), Hotel Collect (2) and ETP (3) inventory.
-DROP TABLE IF EXISTS activepropertybusinessmodel;
-CREATE TABLE activepropertybusinessmodel
-(
-	EANHotelID INT NOT NULL,
-	SequenceNumber INT,
-	Name VARCHAR(70),
-	Address1 VARCHAR(50),
-	Address2 VARCHAR(50),
-	City VARCHAR(50),
-	StateProvince VARCHAR(2),
-	PostalCode VARCHAR(15),
-	Country VARCHAR(2),
-	Latitude numeric(8,5),
-	Longitude numeric(8,5),
-	AirportCode VARCHAR(3),
-	PropertyCategory INT,
-	PropertyCurrency VARCHAR(3),
-	StarRating numeric(2,1),
-	Confidence INT,
-	SupplierType VARCHAR(3),
-	Location VARCHAR(80),
-	ChainCodeID INT,
-	RegionID INT,
-	HighRate numeric(19,4),
-	LowRate numeric(19,4),
-	CheckInTime VARCHAR(10),
-	CheckOutTime VARCHAR(10),
-	BusinessModelMask INT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## index by Latitude, Longitude to use for geosearches
-CREATE INDEX activemodel_geoloc ON activepropertybusinessmodel(Latitude, Longitude);
-## index by RegionID to use for Regions searches
-CREATE INDEX activemodel_regionid ON activepropertybusinessmodel(RegionID);
 
 
 ##################################################################

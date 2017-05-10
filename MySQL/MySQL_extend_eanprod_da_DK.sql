@@ -4,7 +4,7 @@
 ## This is a suplemental script that you can use to   ##
 ## extend the database eanprod and add languages.     ##
 ## we choose as a convention to use name_xx_xx        ##
-## table names are lowercase so it will work for all  ## 
+## table names are lowercase so it will work for all  ##
 ## MySQL platforms the same.                          ##
 ########################################################
 ## 2.7 - Created the ActivePropertyBusinessModel_xx_XX
@@ -14,8 +14,8 @@ USE eanprod;
 ##                                                    ##
 ## TABLES CREATED FROM THE EAN RELATIONAL DOWNLOADED  ##
 ## FILES, but with the language code as:              ##
-## ar_SA,da_dk,fr_FR,it_IT,da_dk,tr_TR,cs_CZ,es_MX,   ##
-## hr_HR,ko_KR,no_NO,ru_RU,uk_UA,da_dk,et_EE,hu_HU,   ##
+## ar_SA,da_dk,fr_FR,it_IT,da_dk,tr_TR,da_dk,es_MX,   ##
+## hr_HR,ko_KR,no_NO,ru_RU,uk_UA,da_DK,et_EE,hu_HU,   ##
 ## lt_LT,nl_NL,sk_SK,vi_VN,de_DE,fi_FI,in_ID,lv_LV,   ##
 ## pl_PL,sv_SE,zh_CN,el_GR,fr_CA,is_IS,ms_MY,pt_BR,   ##
 ## th_TH,zh_TW                                        ##
@@ -35,34 +35,6 @@ CREATE TABLE activepropertylist_da_dk
 	PRIMARY KEY (EANHotelID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-
-## table to correct search term for a region
-## notice there are NO spaces between words
-## AliasRegionList - structure is the same as US version
-DROP TABLE IF EXISTS aliasregionlist_da_dk;
-CREATE TABLE aliasregionlist_da_dk
-(
-	RegionID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	AliasString VARCHAR(255),
-    TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-##	PRIMARY KEY (RegionID, AliasString)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-CREATE INDEX idx_aliasregionlist_da_dk_regionid ON aliasregionlist_da_dk(RegionID);
-
-
-## AreaAttractionsList - structure is the same as US version
-DROP TABLE IF EXISTS areaattractionslist_da_dk;
-CREATE TABLE areaattractionslist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	AreaAttractions TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
 ## ActivePropertyList - structure is different for US version
 DROP TABLE IF EXISTS attributelist_da_dk;
 CREATE TABLE attributelist_da_dk
@@ -73,47 +45,6 @@ CREATE TABLE attributelist_da_dk
   TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (AttributeID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-## CountryList - structure is different for US version
-DROP TABLE IF EXISTS countrylist_da_dk;
-CREATE TABLE countrylist_da_dk
-(
-	CountryID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-## max of 191 so it will not break index max of 767 bytes (Unicode are 4x)
-	CountryName VARCHAR(191),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (CountryID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## add indexes by country code & country name
-CREATE INDEX idx_countrylist_da_dk_countryname ON countrylist_da_dk(CountryName);
-## as the field ContryCode is not present, no index exist like the US version
-
-
-## DinningDescriptionList - structure is the same as US version
-DROP TABLE IF EXISTS diningdescriptionlist_da_dk;
-CREATE TABLE diningdescriptionlist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	DiningDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## PolicyDescriptionList - structure is the same for US version
-DROP TABLE IF EXISTS policydescriptionlist_da_dk;
-CREATE TABLE policydescriptionlist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PolicyDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
 
 
 ## PropertyAttributeLink - structure is the same as US version
@@ -151,174 +82,4 @@ CREATE TABLE propertytypelist_da_dk
 	PropertyCategoryDesc VARCHAR(256),
   TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (PropertyCategory)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-## RecreationDescriptionList - structure is the same as US version
-DROP TABLE IF EXISTS recreationdescriptionlist_da_dk;
-CREATE TABLE recreationdescriptionlist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	RecreationDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-## RegionList - structure is different for US version
-## table is RegionList, while US is ParentRegionList
-DROP TABLE IF EXISTS regionlist_da_dk;
-CREATE TABLE regionlist_da_dk
-(
-  RegionID INT NOT NULL,
-  LanguageCode VARCHAR(5),
-  RegionName VARCHAR(255),
-  RegionNameLong VARCHAR(510),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (RegionID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-## SpaDescriptionList - structure is the same as US version
-DROP TABLE IF EXISTS spadescriptionlist_da_dk;
-CREATE TABLE spadescriptionlist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	SpaDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-## Multiple rooms per each hotel - so a compound primary key
-## RoomTypeList - structure is different for US version
-DROP TABLE IF EXISTS roomtypelist_da_dk;
-CREATE TABLE roomtypelist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	RoomTypeID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	RoomTypeName VARCHAR(200),
-	RoomTypeDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID, RoomTypeID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-## WhatToExpectList - structure is the same as US version
-DROP TABLE IF EXISTS whattoexpectlist_da_dk;
-CREATE TABLE whattoexpectlist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	WhatToExpect TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## new files from minorrev=24 
-## PropertyLocationList (new)
-DROP TABLE IF EXISTS propertylocationlist_da_dk;
-CREATE TABLE propertylocationlist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyLocationDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## PropertyAmenitiesList (new)
-DROP TABLE IF EXISTS propertyamenitieslist_da_dk;
-CREATE TABLE propertyamenitieslist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyAmenitiesDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## PropertyRoomsList (new)
-DROP TABLE IF EXISTS propertyroomslist_da_dk;
-CREATE TABLE propertyroomslist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyRoomsDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## PropertyBusinessAmenitiesList (new)
-DROP TABLE IF EXISTS propertybusinessamenitieslist_da_dk;
-CREATE TABLE propertybusinessamenitieslist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyBusinessAmenitiesDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## PropertyNationalRatingList (new)
-DROP TABLE IF EXISTS propertynationalratingslist_da_dk;
-CREATE TABLE propertynationalratingslist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyNationalRatingsDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## PropertyFeesList (new)
-DROP TABLE IF EXISTS propertyfeeslist_da_dk;
-CREATE TABLE propertyfeeslist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyFeesDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## PropertyMandatoryFeesList (new)
-DROP TABLE IF EXISTS propertymandatoryfeeslist_da_dk;
-CREATE TABLE propertymandatoryfeeslist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyMandatoryFeesDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## PropertyRenovationList (new)
-DROP TABLE IF EXISTS propertyrenovationslist_da_dk;
-CREATE TABLE propertyrenovationslist_da_dk
-(
-	EANHotelID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	PropertyRenovationsDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (EANHotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## Business Models for pre-pay & post-pay properties
-### Business Model Flag - Expedia Collect (1), Hotel Collect (2) and ETP (3) inventory.
-DROP TABLE IF EXISTS activepropertybusinessmodel_da_dk;
-CREATE TABLE activepropertybusinessmodel_da_dk 
-(
-  EANHotelID INT NOT NULL,
-  LanguageCode VARCHAR(5),
-  Name VARCHAR(70),
-  Location VARCHAR(80),
-  CheckInTime VARCHAR(10),
-  CheckOutTime VARCHAR(10),
-  BusinessModelMask INT,
-  TimeStamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (EANHotelID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
