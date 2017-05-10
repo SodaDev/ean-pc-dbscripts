@@ -24,6 +24,7 @@ function checkout {
 
 function run_query {
     echo 'Running query'
+    echo mysql -sqN -u "${MYSQL_USER}" -p"${MYSQL_PASS}" -h "$MYSQL_HOST"  -D $DB_NAME -e "$@"
     mysql -sqN -u "${MYSQL_USER}" -p"${MYSQL_PASS}" -h "$MYSQL_HOST"  -D $DB_NAME -e "$@"
 }
 
@@ -55,11 +56,11 @@ function create_database {
 }
 
 function create_tables {
-  echo 'Creating tables'
   run_query_from_pipe < "${sql_files}/MySQL_create_eanprod.sql"
-  
+
   langs=$(find $sql_files -type f | grep extend)
-  for lang in $langs; do 
+  for lang in $langs; do
+      echo 'Creating tables for language ' $lang
     run_query_from_pipe < $lang
   done
 }
@@ -71,5 +72,6 @@ should_create_database && create_database
 
 should_create_table && create_tables
 
+echo 'Running update with' ${workspace}/EAN_MySQL_refresh.sh
 bash ${workspace}/EAN_MySQL_refresh.sh
 
