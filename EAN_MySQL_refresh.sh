@@ -142,6 +142,7 @@ AttributeList_sv_SE
 ActivePropertyList_sv_SE
 PropertyTypeList_sv_SE
 PropertyDescriptionList_sv_SE
+
 )
 
 ## home where the process will execute
@@ -182,6 +183,8 @@ CMD_MYSQL="${MYSQL_DIR}mysql  --local-infile=1 --default-character-set=utf8 --pr
 echo "Downloading files using wget..."
 for FILE in ${FILES[@]}
 do
+    echo 'Processing ' $FILE
+
     ## capture the current file checksum
 	if [ -e ${FILE}.txt ] && [ -n "${CHKSUM_CMD}" ] ; then
 		echo "File exist $FILE.txt and using chksum command $CHKSUM_CMD... saving checksum for comparison..."
@@ -190,7 +193,8 @@ do
     	CHKSUM_PREV=0
 	fi
     ## download the files via HTTP (no need for https), using time-stamping, -nd no host directories
-    wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/V2/$FILE.zip
+    echo "Loading " http://www.ian.com/affiliatecenter/include/V2/$FILE.zip
+    wget  -t 30 --no-verbose -r -N -nd --show-progress http://www.ian.com/affiliatecenter/include/V2/$FILE.zip
 	## unzip the files, save the exit value to check for errors
 	## BSD does not support same syntax, but there is no need in MAC OS as Linux (unzip -L `find -iname $FILE.zip`)
     unzip -L -o $FILE.zip

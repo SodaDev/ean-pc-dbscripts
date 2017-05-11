@@ -26,12 +26,16 @@ MYSQL_DIR=/usr/bin/
 # then we can use: --login-path={name of your connection}
 MYSQL_LOGINPATH=local
 #MySQL user, password, host (Server)
-MYSQL_USER=eanuser
-MYSQL_PASS=Passw@rd1
-MYSQL_HOST=localhost
-MYSQL_DB=eanprod
+
+test -n "${MYSQL_HOST}" || { echo 'Environment variable MYSQL_HOST must be set'; exit 1; }
+test -n "${MYSQL_USER}" || { echo 'Environment variable MYSQL_USER must be set'; exit 1 ; }
+test -n "${MYSQL_DB}" || { echo 'Environment variable MYSQL_USER must be set'; exit 1 ; }
+test -n "${MYSQL_PASS}" || { echo 'Environment variable MYSQL_PASS must be set'; exit 1; }
+
 # home directory of the user (in our case "eanuser")
-HOME_DIR=/home/eanuser
+HOME_DIR=/opt/data/eanprod
+mkdir -p $HOME_DIR
+
 # protocol TCP All, SOCKET Unix only, PIPE Windows only, MEMORY Windows only
 MYSQL_PROTOCOL=TCP
 # 3336 as default,MAC using MAMP is 8889
@@ -177,6 +181,8 @@ CMD_MYSQL="${MYSQL_DIR}mysql  --local-infile=1 --default-character-set=utf8 --pr
 #
 for FILE in ${FILES[@]}
 do
+    echo 'Processing ' $FILE
+
     records=`wc -l < $FILE.txt | tr -d ' '`
     (( records-- ))
     ## check if we need to update or not based on file changed, file contains at least 1x record

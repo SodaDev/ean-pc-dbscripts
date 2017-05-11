@@ -72,6 +72,8 @@ should_create_database && create_database
 
 should_create_table && create_tables
 
-echo 'Running update with' ${workspace}/EAN_MySQL_refresh.sh
-bash ${workspace}/EAN_MySQL_refresh.sh
+#echo 'Running update with' ${workspace}/EAN_MySQL_refresh.sh
+#bash ${workspace}/EAN_MySQL_refresh.sh
+echo 'Running update with' ${workspace}/EAN-MySQL_refresh_without_loading_new_data.sh
+bash ${workspace}/EAN-MySQL_refresh_without_loading_new_data.sh
 
