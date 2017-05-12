@@ -81,6 +81,8 @@ CREATE INDEX activeproperties_geoloc
 ## index by RegionID to use for Regions searches
 CREATE INDEX activeproperties_regionid
   ON activepropertylist (RegionID);
+CREATE INDEX activeproperties_propertyCategory
+  ON activepropertylist (PropertyCategory);
 
 DROP TABLE IF EXISTS propertytypelist;
 CREATE TABLE propertytypelist
@@ -93,6 +95,7 @@ CREATE TABLE propertytypelist
 )
   CHARACTER SET utf8
   COLLATE utf8_unicode_ci;
+CREATE INDEX propertytypelist_propertyCategory_idx ON propertytypelist (PropertyCategory);
 
 DROP TABLE IF EXISTS propertydescriptionlist;
 CREATE TABLE propertydescriptionlist
@@ -119,6 +122,7 @@ CREATE TABLE attributelist
 )
   CHARACTER SET utf8
   COLLATE utf8_unicode_ci;
+CREATE INDEX attributelist_type_idx ON attributelist (Type);
 
 DROP TABLE IF EXISTS propertyattributelink;
 CREATE TABLE propertyattributelink
